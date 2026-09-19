@@ -111,14 +111,14 @@ try:
         else:
             print(f"\n4. No buildings detected")
             print(f"   (The building detector might need tuning for this image)")
-        
-        print(f"\n✓ API and backend are working!")
-        
+
+        print("\n✓ API and backend are working!")
+
 except urllib.error.HTTPError as e:
     error_response = e.read().decode()
     print(f"✗ HTTP {e.code} Error!")
     print(f"   Response: {error_response[:200]}")
-    
+
 except Exception as e:
     print(f"✗ Error: {e}")
     import traceback
