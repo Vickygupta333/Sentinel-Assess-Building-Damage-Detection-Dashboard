@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DAMAGE_MODEL=heuristic
+      # Uncomment to serve the real trained CNN instead of the heuristic:
+      # - DAMAGE_MODEL=cnn
+      # - MODEL_WEIGHTS=/app/weights/tts_model.pt
+    # volumes:
+    #   - ./backend/weights:/app/weights   # mount a trained checkpoint
+
+  frontend:
+    image: python:3.11-slim
+    working_dir: /site
+    volumes:
+      - ./frontend:/site
+    command: python -m http.server 5500
+    ports:
+      - "5500:5500"
+    depends_on:
+      - api

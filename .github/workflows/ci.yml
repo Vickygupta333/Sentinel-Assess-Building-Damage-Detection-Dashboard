@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install pytest flake8
+
+      - name: Lint
+        run: flake8 backend --max-line-length=110 --extend-ignore=E203,W503
+
+      - name: Run tests
+        run: |
+          cd backend
+          python -m pytest ../tests -q
+
+  build-image:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend Docker image
+        run: docker build -t sentinel-assess-api:${{ github.sha }} ./backend
+
+      # Add a registry login + `docker push` step here once you have a
+      # container registry configured (e.g. GHCR, ECR, Artifact Registry).

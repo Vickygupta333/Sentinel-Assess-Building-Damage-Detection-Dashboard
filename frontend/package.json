@@ -1,0 +1,7 @@
+{
+  "name": "sentinel-assess-frontend",
+  "private": true,
+  "scripts": {
+    "dev": "python -m http.server 5500"
+  }
+}
